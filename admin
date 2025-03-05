@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت سفارش‌ها</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>لیست سفارش‌ها</h1>
+    <table id="ordersTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>شماره میز</th>
+                <th>آیتم‌ها</th>
+                <th>تاریخ سفارش</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- داده‌ها اینجا نمایش داده میشن -->
+        </tbody>
+    </table>
+
+    <script>
+        // تابع برای دریافت و نمایش سفارش‌ها
+        function loadOrders() {
+            fetch('http://yourdomain.com/orders.php') // آدرس فایل orders.php
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const ordersTable = document.getElementById('ordersTable').getElementsByTagName('tbody')[0];
+                        ordersTable.innerHTML = ''; // پاک کردن محتوای قبلی
+
+                        // نمایش هر سفارش در جدول
+                        data.orders.forEach(order => {
+                            const row = ordersTable.insertRow();
+                            row.insertCell().textContent = order.id;
+                            row.insertCell().textContent = order.table_number;
+                            row.insertCell().textContent = order.items;
+                            row.insertCell().textContent = order.order_date;
+                        });
+                    } else {
+                        console.error(data.error);
+                    }
+                })
+                .catch(error => console.error('خطا در دریافت داده‌ها:', error));
+        }
+
+        // بارگذاری سفارش‌ها هنگام لود صفحه
+        window.onload = loadOrders;
+    </script>
+</body>
+</html>
