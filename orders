@@ -1,0 +1,35 @@
+<?php
+// نمایش خطاهای PHP
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// هدرهای CORS برای اجازه دسترسی از دامنه‌های دیگر
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// اطلاعات اتصال به پایگاه داده
+$host = 'sql100.infinityfree.com'; // هاست دیتابیس
+$dbname = 'if0_38417910_wp161'; // نام دیتابیس
+$username = 'if0_38417910'; // نام کاربری
+$password = 'ovbL3A3CHHwUrz'; // رمز عبور
+
+try {
+    // اتصال به پایگاه داده
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // دریافت تمام سفارش‌ها از جدول orders
+    $stmt = $conn->prepare("SELECT * FROM orders");
+    $stmt->execute();
+    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // پاسخ به فرانت‌اند با لیست سفارش‌ها
+    echo json_encode(['success' => true, 'orders' => $orders], JSON_UNESCAPED_UNICODE);
+} catch (PDOException $e) {
+    // پاسخ خطا به فرانت‌اند
+    echo json_encode(['error' => 'خطا در دریافت سفارش‌ها: ' . $e->getMessage()]);
+}
+?>
