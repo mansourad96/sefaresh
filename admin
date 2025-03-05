@@ -44,7 +44,7 @@
     <script>
         // تابع برای دریافت و نمایش سفارش‌ها
         function loadOrders() {
-            fetch('http://yourdomain.com/orders.php') // آدرس فایل orders.php
+            fetch('orders.php') // آدرس فایل orders.php
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -56,7 +56,12 @@
                             const row = ordersTable.insertRow();
                             row.insertCell().textContent = order.id;
                             row.insertCell().textContent = order.table_number;
-                            row.insertCell().textContent = order.items;
+
+                            // پردازش آیتم‌ها
+                            const items = JSON.parse(order.items); // تبدیل JSON به آرایه
+                            const itemsText = items.map(item => `${item.name} (${item.quantity})`).join('، '); // تبدیل آیتم‌ها به متن
+                            row.insertCell().textContent = itemsText;
+
                             row.insertCell().textContent = order.order_date;
                         });
                     } else {
